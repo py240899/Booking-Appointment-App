@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form onsubmit="saveToLocalStorage(event)">
+        <label>Name</label>
+        <input id="username" type="text" name="username" required/>
+        <label>Email</label>
+        <input id="email" type="text" name="email" required/>
+        <label>Phone Number</label>
+        <input id="phonenumber" type="tel" name="phonenumber"/>
+        <button type="submit">Submit</button>
+    </form>
+    <ul id="listOfUsers"></ul>
+    <script>
+    function saveToLocalStorage(event){
+        event.preventDefault();
+        const name = event.target.username.value;
+        const email = event.target.email.value;
+        const phonenumber = event.target.phonenumber.value;
+
+        const obj = {
+            name,
+            email,
+            phonenumber
+        };
+
+        localStorage.setItem(email, JSON.stringify(obj));
+        showNewUserOnScreen(obj);
+    }
+
+    window.addEventListener("DOMContentLoaded",()=>{
+        const localStorageObj = localStorage;
+        const localstoragekeys = Object.keys(localStorageObj);
+
+        for(var i=0;i<localstoragekeys.length;i++){
+            const key = localstoragekeys[i];
+            const userDetailsString = localStorageObj[key];
+            const userDetailsObj = JSON.parse(userDetailsString);
+            showNewUserOnScreen(userDetailsObj);
+        }
+    });
+
+    function showNewUserOnScreen(user){
+        document.getElementById('username').value="";
+        document.getElementById('email').value="";
+        document.getElementById('phonenumber').value="";
+
+        const parentNode = document.getElementById('listOfUsers');
+        const childHTML = `<li id="${user.email}">${user.name} - ${user.email} - ${user.phonenumber}</li>`;
+        
+        parentNode.innerHTML += childHTML;
+    }
+
+    function removeUserFromScreen(email) {
+        const userElement = document.getElementById(email);
+        if (userElement) {
+            userElement.remove();
+        }
+    }
+    </script>
+</body>
+</html>
